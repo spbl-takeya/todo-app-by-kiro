@@ -3,6 +3,7 @@ import type { Task } from './types/Task'
 import { TaskService } from './services/TaskService'
 import { TaskForm } from './components/TaskForm'
 import { TaskList } from './components/TaskList'
+import { ErrorMessage } from './components/ErrorMessage'
 import './App.css'
 
 /**
@@ -12,6 +13,7 @@ import './App.css'
 function App() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [taskService] = useState(() => new TaskService())
+  const [error, setError] = useState<string>('')
 
   // アプリケーション起動時にタスクを読み込み
   useEffect(() => {
@@ -24,8 +26,27 @@ function App() {
    * @param title タスクのタイトル
    */
   const handleAddTask = (title: string) => {
-    const newTask = taskService.addTask(title)
-    setTasks(taskService.getTasks())
+    try {
+      // バリデーション: 空のタイトルチェック
+      const trimmedTitle = title.trim()
+      if (!trimmedTitle) {
+        setError('タスクのタイトルを入力してください')
+        return
+      }
+
+      // 長さ制限チェック
+      if (trimmedTitle.length > 100) {
+        setError('タスクのタイトルは100文字以内で入力してください')
+        return
+      }
+
+      taskService.addTask(trimmedTitle)
+      setTasks(taskService.getTasks())
+      setError('') // 成功時はエラーをクリア
+    } catch (err) {
+      setError('タスクの追加に失敗しました')
+      console.error('タスク追加エラー:', err)
+    }
   }
 
   /**
@@ -33,8 +54,14 @@ function App() {
    * @param id タスクのID
    */
   const handleToggleTask = (id: string) => {
-    taskService.toggleTask(id)
-    setTasks(taskService.getTasks())
+    try {
+      taskService.toggleTask(id)
+      setTasks(taskService.getTasks())
+      setError('')
+    } catch (err) {
+      setError('タスクの状態変更に失敗しました')
+      console.error('タスク状態変更エラー:', err)
+    }
   }
 
   /**
@@ -42,8 +69,14 @@ function App() {
    * @param id タスクのID
    */
   const handleDeleteTask = (id: string) => {
-    taskService.deleteTask(id)
-    setTasks(taskService.getTasks())
+    try {
+      taskService.deleteTask(id)
+      setTasks(taskService.getTasks())
+      setError('')
+    } catch (err) {
+      setError('タスクの削除に失敗しました')
+      console.error('タスク削除エラー:', err)
+    }
   }
 
   /**
@@ -52,8 +85,35 @@ function App() {
    * @param updates 更新内容
    */
   const handleUpdateTask = (id: string, updates: Partial<Task>) => {
-    taskService.updateTask(id, updates)
-    setTasks(taskService.getTasks())
+    try {
+      // タイトル更新時のバリデーション
+      if (updates.title !== undefined) {
+        const trimmedTitle = updates.title.trim()
+        if (!trimmedTitle) {
+          setError('タスクのタイトルを入力してください')
+          return
+        }
+        if (trimmedTitle.length > 100) {
+          setError('タスクのタイトルは100文字以内で入力してください')
+          return
+        }
+        updates.title = trimmedTitle
+      }
+
+      taskService.updateTask(id, updates)
+      setTasks(taskService.getTasks())
+      setError('')
+    } catch (err) {
+      setError('タスクの更新に失敗しました')
+      console.error('タスク更新エラー:', err)
+    }
+  }
+
+  /**
+   * エラーメッセージをクリア
+   */
+  const handleClearError = () => {
+    setError('')
   }
 
   return (
@@ -63,6 +123,14 @@ function App() {
       </header>
       
       <main className="app-main">
+        {error && (
+          <ErrorMessage 
+            message={error}
+            onClear={handleClearError}
+            type="error"
+          />
+        )}
+        
         <TaskForm onAddTask={handleAddTask} />
         
         <TaskList 

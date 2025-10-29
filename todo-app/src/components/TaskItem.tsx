@@ -53,7 +53,25 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
    */
   const handleSaveEdit = () => {
     const trimmedTitle = editTitle.trim()
-    if (trimmedTitle && trimmedTitle !== task.title) {
+    
+    // バリデーション: 空のタイトルチェック
+    if (!trimmedTitle) {
+      // 空の場合は元のタイトルに戻す
+      setEditTitle(task.title)
+      setIsEditing(false)
+      return
+    }
+
+    // 長さ制限チェック
+    if (trimmedTitle.length > 100) {
+      // 長すぎる場合は元のタイトルに戻す
+      setEditTitle(task.title)
+      setIsEditing(false)
+      return
+    }
+
+    // 変更がある場合のみ更新
+    if (trimmedTitle !== task.title) {
       onUpdate(task.id, { title: trimmedTitle })
     }
     setIsEditing(false)

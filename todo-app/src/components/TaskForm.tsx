@@ -28,6 +28,12 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
       return
     }
 
+    // 長さ制限チェック
+    if (trimmedTitle.length > 100) {
+      setError('タスクのタイトルは100文字以内で入力してください')
+      return
+    }
+
     // タスクを追加
     onAddTask(trimmedTitle)
     
