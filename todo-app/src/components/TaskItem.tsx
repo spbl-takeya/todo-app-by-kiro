@@ -163,7 +163,7 @@ export function TaskItem({
 
   return (
     <div
-      className={`task-item ${task.completed ? "task-item--completed" : ""}`}
+      className={`task-item ${task.completed ? "task-item--completed" : ""} ${dueStatus ? `task-item--${dueStatus}` : ""}`}
     >
       <div className="task-item-content">
         <label className="task-item-checkbox-label">
@@ -209,15 +209,22 @@ export function TaskItem({
             <span className="task-item-created-date">
               作成: {formatDate(task.createdAt)}
             </span>
-            {task.dueDate && (
-              <span
-                className={`task-item-due-date task-item-due-date--${dueStatus}`}
-              >
-                期限: {formatDate(task.dueDate)}
-                {dueStatus === "overdue" && " (期限切れ)"}
-                {dueStatus === "due-soon" && " (期限間近)"}
-              </span>
-            )}
+            
+            <div className="task-item-due-info">
+              {task.dueDate ? (
+                <span
+                  className={`task-item-due-date task-item-due-date--${dueStatus}`}
+                >
+                  📅 期限: {formatDate(task.dueDate)}
+                  {dueStatus === "overdue" && " ⚠️ (期限切れ)"}
+                  {dueStatus === "due-soon" && " ⏰ (期限間近)"}
+                </span>
+              ) : (
+                <span className="task-item-no-due">
+                  📅 期限なし
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>

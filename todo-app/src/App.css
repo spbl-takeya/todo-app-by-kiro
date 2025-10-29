@@ -627,6 +627,61 @@ body {
   .task-list-empty-state {
     color: #94a3b8;
   }
+
+  .task-sorter {
+    background: #1e293b;
+    border-color: #475569;
+  }
+
+  .task-sorter-label {
+    color: #e2e8f0;
+  }
+
+  .task-sorter-button {
+    background: #0f172a;
+    border-color: #475569;
+    color: #e2e8f0;
+  }
+
+  .task-sorter-button:hover {
+    background: #1e293b;
+    border-color: #64748b;
+  }
+
+  .task-sorter-button--active {
+    background: #6366f1;
+    border-color: #6366f1;
+    color: white;
+  }
+
+  .task-sorter-button--active:hover {
+    background: #5b21b6;
+    border-color: #5b21b6;
+  }
+
+  .task-item-due-date--normal {
+    color: #10b981;
+    background: #064e3b;
+    border-color: #065f46;
+  }
+
+  .task-item-due-date--due-soon {
+    color: #fbbf24;
+    background: #451a03;
+    border-color: #92400e;
+  }
+
+  .task-item-due-date--overdue {
+    color: #f87171;
+    background: #450a0a;
+    border-color: #991b1b;
+  }
+
+  .task-item-no-due {
+    color: #9ca3af;
+    background: #1e293b;
+    border-color: #475569;
+  }
 }
 /* ===== DatePickerのスタイル ===== */
 .date-picker {
@@ -692,7 +747,7 @@ body {
 .task-item-dates {
   display: flex;
   flex-direction: column;
-  gap: 0.125rem;
+  gap: 0.25rem;
 }
 
 .task-item-created-date {
@@ -700,21 +755,47 @@ body {
   color: #6b7280;
 }
 
+.task-item-due-info {
+  display: flex;
+  align-items: center;
+}
+
 .task-item-due-date {
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .task-item-due-date--normal {
   color: #059669;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
 }
 
 .task-item-due-date--due-soon {
   color: #f59e0b;
+  background: #fffbeb;
+  border: 1px solid #fed7aa;
 }
 
 .task-item-due-date--overdue {
   color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.task-item-no-due {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-style: italic;
+  padding: 0.125rem 0.375rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
 }
 
 /* ===== TaskFormの期限入力対応 ===== */
@@ -729,8 +810,150 @@ body {
     flex-direction: row;
     align-items: flex-start;
   }
-  
+
   .date-picker {
     min-width: 200px;
+  }
+}
+
+/* ===== TaskSorterのスタイル ===== */
+.task-sorter {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.task-sorter-label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.task-sorter-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.task-sorter-button {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.task-sorter-button:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+
+.task-sorter-button--active {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  color: white;
+}
+
+.task-sorter-button--active:hover {
+  background: #4338ca;
+  border-color: #4338ca;
+}
+
+.task-sorter-button-text {
+  font-weight: 500;
+  color: inherit;
+}
+
+.task-sorter-button-icon {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* ===== 期限アラート機能のスタイル ===== */
+.task-item--overdue {
+  border-left: 4px solid #dc2626;
+  background: #fef2f2;
+}
+
+.task-item--overdue:hover {
+  background: #fee2e2;
+  border-color: #dc2626;
+}
+
+.task-item--due-soon {
+  border-left: 4px solid #f59e0b;
+  background: #fffbeb;
+}
+
+.task-item--due-soon:hover {
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.task-item--normal {
+  border-left: 4px solid #059669;
+}
+
+/* 完了済みタスクのアラート表示を抑制 */
+.task-item--completed.task-item--overdue,
+.task-item--completed.task-item--due-soon {
+  border-left: 4px solid #9ca3af;
+  background: #f9fafb;
+}
+
+.task-item--completed.task-item--overdue:hover,
+.task-item--completed.task-item--due-soon:hover {
+  background: #f3f4f6;
+}
+
+/* ===== レスポンシブ対応 ===== */
+@media (max-width: 768px) {
+  .task-sorter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .task-sorter-options {
+    justify-content: center;
+  }
+
+  .task-sorter-button {
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .task-sorter-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .task-sorter-button {
+    flex: none;
+  }
+
+  .task-item-dates {
+    gap: 0.375rem;
+  }
+
+  .task-item-due-date,
+  .task-item-no-due {
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
   }
 }
