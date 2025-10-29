@@ -1,42 +1,566 @@
+/* ===== アプリケーション全体のスタイル ===== */
 #root {
-  max-width: 1280px;
+  max-width: 800px;
   margin: 0 auto;
+  padding: 1rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.app {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  min-height: 90vh;
+}
+
+.app-header {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: white;
   padding: 2rem;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.app-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-@keyframes logo-spin {
+.app-main {
+  padding: 2rem;
+}
+
+/* ===== エラーメッセージのスタイル ===== */
+.error-message {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  animation: slideIn 0.3s ease-out;
+}
+
+.error-message--error {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.error-message--warning {
+  background-color: #fffbeb;
+  border: 1px solid #fed7aa;
+  color: #d97706;
+}
+
+.error-message--info {
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #2563eb;
+}
+
+.error-message-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.error-message-icon {
+  font-size: 1.25rem;
+}
+
+.error-message-text {
+  flex: 1;
+}
+
+.error-message-close {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.error-message-close:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ===== タスクフォームのスタイル ===== */
+.task-form {
+  margin-bottom: 2rem;
+}
+
+.task-form-input-group {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.task-form-input {
+  flex: 1;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.task-form-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.task-form-input--error {
+  border-color: #dc2626;
+}
+
+.task-form-input--error:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.task-form-button {
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.task-form-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.task-form-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.task-form-error {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+/* ===== タスクリストのスタイル ===== */
+.task-list {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.task-list--empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
+.task-list-empty-state {
+  color: #6b7280;
+}
+
+.task-list-empty-message {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.task-list-empty-hint {
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
+.task-list-header {
+  margin-bottom: 1.5rem;
+}
+
+.task-list-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.task-list-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.task-list-item {
+  margin-bottom: 0.75rem;
+}
+
+.task-list-item:last-child {
+  margin-bottom: 0;
+}
+
+/* ===== タスクアイテムのスタイル ===== */
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.task-item:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.task-item--completed {
+  opacity: 0.7;
+  background: #f9fafb;
+}
+
+.task-item-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.task-item-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.task-item-checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
+}
+
+.task-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.task-item-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+  transition: all 0.2s;
+}
+
+.task-item-title--completed {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.task-item-date {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.task-item-edit {
+  flex: 1;
+}
+
+.task-item-edit-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 2px solid #4f46e5;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.task-item-edit-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.task-item-edit-hint {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.task-item-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.task-item-edit-button,
+.task-item-delete-button {
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 1rem;
+}
+
+.task-item-edit-button:hover {
+  background-color: #f3f4f6;
+}
+
+.task-item-delete-button:hover {
+  background-color: #fef2f2;
+}
+
+.task-item-edit-icon,
+.task-item-delete-icon {
+  display: block;
+}
+
+/* ===== アニメーション ===== */
+@keyframes slideIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(-10px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* ===== レスポンシブデザイン ===== */
+
+/* タブレット対応 (768px以下) */
+@media (max-width: 768px) {
+  #root {
+    padding: 0.5rem;
+  }
+
+  .app-header {
+    padding: 1.5rem 1rem;
+  }
+
+  .app-header h1 {
+    font-size: 2rem;
+  }
+
+  .app-main {
+    padding: 1.5rem;
+  }
+
+  .task-form-input-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .task-form-button {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .task-item {
+    padding: 0.875rem 1rem;
+  }
+
+  .task-item-content {
+    gap: 0.5rem;
+  }
+
+  .task-item-actions {
+    gap: 0.25rem;
   }
 }
 
-.card {
-  padding: 2em;
+/* モバイル対応 (480px以下) */
+@media (max-width: 480px) {
+  #root {
+    padding: 0.25rem;
+  }
+
+  .app {
+    border-radius: 8px;
+    min-height: 95vh;
+  }
+
+  .app-header {
+    padding: 1rem;
+  }
+
+  .app-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .app-main {
+    padding: 1rem;
+  }
+
+  .task-list {
+    padding: 1rem;
+  }
+
+  .task-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .task-item-content {
+    order: 1;
+  }
+
+  .task-item-actions {
+    order: 2;
+    justify-content: flex-end;
+    padding-top: 0.5rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .task-item-edit-button,
+  .task-item-delete-button {
+    padding: 0.75rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .error-message {
+    padding: 0.875rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .error-message-content {
+    gap: 0.5rem;
+  }
 }
 
-.read-the-docs {
-  color: #888;
+/* 大画面対応 (1200px以上) */
+@media (min-width: 1200px) {
+  #root {
+    max-width: 900px;
+    padding: 2rem;
+  }
+
+  .app-header h1 {
+    font-size: 3rem;
+  }
+
+  .app-main {
+    padding: 2.5rem;
+  }
+
+  .task-form-input {
+    font-size: 1.125rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .task-form-button {
+    font-size: 1.125rem;
+    padding: 1rem 2rem;
+  }
+
+  .task-item {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .task-item-title {
+    font-size: 1.125rem;
+  }
+}
+
+/* タッチデバイス対応 */
+@media (hover: none) and (pointer: coarse) {
+  .task-item-edit-button,
+  .task-item-delete-button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.75rem;
+  }
+
+  .task-form-button {
+    min-height: 48px;
+  }
+
+  .task-item-checkbox {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .error-message-close {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.5rem;
+  }
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  #root {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  }
+
+  .app {
+    background: #0f172a;
+    color: #e2e8f0;
+  }
+
+  .app-header {
+    background: linear-gradient(135deg, #3730a3 0%, #6d28d9 100%);
+  }
+
+  .task-list {
+    background: #1e293b;
+  }
+
+  .task-item {
+    background: #0f172a;
+    border-color: #334155;
+  }
+
+  .task-item:hover {
+    border-color: #475569;
+  }
+
+  .task-item--completed {
+    background: #1e293b;
+  }
+
+  .task-item-title {
+    color: #e2e8f0;
+  }
+
+  .task-item-title--completed {
+    color: #64748b;
+  }
+
+  .task-item-date {
+    color: #94a3b8;
+  }
+
+  .task-form-input {
+    background: #1e293b;
+    border-color: #475569;
+    color: #e2e8f0;
+  }
+
+  .task-form-input:focus {
+    border-color: #6366f1;
+  }
+
+  .task-list-title {
+    color: #e2e8f0;
+  }
+
+  .task-list-empty-state {
+    color: #94a3b8;
+  }
 }
