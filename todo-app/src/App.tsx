@@ -4,6 +4,8 @@ import { TaskService } from './services/TaskService'
 import { TaskForm } from './components/TaskForm'
 import { TaskList } from './components/TaskList'
 import { ErrorMessage } from './components/ErrorMessage'
+import { TaskSorter } from './components/TaskSorter'
+import { sortTasks, type SortOption, type SortOrder } from './utils/taskSort'
 import './App.css'
 
 /**
@@ -14,6 +16,8 @@ function App() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [taskService] = useState(() => new TaskService())
   const [error, setError] = useState<string>('')
+  const [sortOption, setSortOption] = useState<SortOption>('dueDate')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc')
 
   // アプリケーション起動時にタスクを読み込み
   useEffect(() => {
@@ -117,6 +121,19 @@ function App() {
     setError('')
   }
 
+  /**
+   * ソート設定変更処理
+   * @param option ソートオプション
+   * @param order ソート順序
+   */
+  const handleSortChange = (option: SortOption, order: SortOrder) => {
+    setSortOption(option)
+    setSortOrder(order)
+  }
+
+  // ソートされたタスクを取得
+  const sortedTasks = sortTasks(tasks, sortOption, sortOrder)
+
   return (
     <div className="app">
       <header className="app-header">
@@ -134,8 +151,14 @@ function App() {
         
         <TaskForm onAddTask={handleAddTask} />
         
+        <TaskSorter
+          onSortChange={handleSortChange}
+          currentSort={sortOption}
+          currentOrder={sortOrder}
+        />
+        
         <TaskList 
-          tasks={tasks}
+          tasks={sortedTasks}
           onToggleTask={handleToggleTask}
           onDeleteTask={handleDeleteTask}
           onUpdateTask={handleUpdateTask}
