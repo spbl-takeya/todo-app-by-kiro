@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import { DatePicker } from './DatePicker'
 
 interface TaskFormProps {
   /** 新しいタスクが追加された時のコールバック */
-  onAddTask: (title: string) => void
+  onAddTask: (title: string, dueDate?: Date) => void
 }
 
 /**
@@ -11,7 +12,9 @@ interface TaskFormProps {
  */
 export function TaskForm({ onAddTask }: TaskFormProps) {
   const [title, setTitle] = useState('')
+  const [dueDate, setDueDate] = useState<Date | undefined>(undefined)
   const [error, setError] = useState('')
+  const [isComposing, setIsComposing] = useState(false)
 
   /**
    * フォーム送信処理
@@ -35,10 +38,11 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
     }
 
     // タスクを追加
-    onAddTask(trimmedTitle)
+    onAddTask(trimmedTitle, dueDate)
     
     // フォームをリセット
     setTitle('')
+    setDueDate(undefined)
     setError('')
   }
 
@@ -55,11 +59,26 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
   }
 
   /**
+   * IME入力開始処理
+   */
+  const handleCompositionStart = () => {
+    setIsComposing(true)
+  }
+
+  /**
+   * IME入力終了処理
+   */
+  const handleCompositionEnd = () => {
+    setIsComposing(false)
+  }
+
+  /**
    * Enterキー押下処理
+   * IME入力中（日本語変換中）の場合は無視
    * @param e キーボードイベント
    */
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !isComposing) {
       handleSubmit(e as any)
     }
   }
@@ -74,7 +93,14 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
           value={title}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
+          onCompositionStart={handleCompositionStart}
+          onCompositionEnd={handleCompositionEnd}
           autoFocus
+        />
+        <DatePicker
+          value={dueDate}
+          onChange={setDueDate}
+          placeholder="期限を設定（任意）"
         />
         <button 
           type="submit" 

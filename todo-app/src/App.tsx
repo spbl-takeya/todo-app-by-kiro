@@ -24,8 +24,9 @@ function App() {
   /**
    * 新しいタスクを追加
    * @param title タスクのタイトル
+   * @param dueDate 期限日時（オプション）
    */
-  const handleAddTask = (title: string) => {
+  const handleAddTask = (title: string, dueDate?: Date) => {
     try {
       // バリデーション: 空のタイトルチェック
       const trimmedTitle = title.trim()
@@ -40,7 +41,7 @@ function App() {
         return
       }
 
-      taskService.addTask(trimmedTitle)
+      taskService.addTask(trimmedTitle, dueDate)
       setTasks(taskService.getTasks())
       setError('') // 成功時はエラーをクリア
     } catch (err) {

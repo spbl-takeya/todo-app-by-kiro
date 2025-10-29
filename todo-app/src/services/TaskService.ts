@@ -29,6 +29,7 @@ export class TaskService {
       const serializedTasks = tasks.map((task) => ({
         ...task,
         createdAt: task.createdAt.toISOString(),
+        dueDate: task.dueDate?.toISOString(),
       }));
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(serializedTasks));
     } catch (error) {
@@ -48,12 +49,16 @@ export class TaskService {
       }
 
       const parsed = JSON.parse(stored) as Array<
-        Omit<Task, "createdAt"> & { createdAt: string }
+        Omit<Task, "createdAt" | "dueDate"> & { 
+          createdAt: string;
+          dueDate?: string;
+        }
       >;
       // ISO文字列をDateオブジェクトに復元
       return parsed.map((task) => ({
         ...task,
         createdAt: new Date(task.createdAt),
+        dueDate: task.dueDate ? new Date(task.dueDate) : undefined,
       }));
     } catch (error) {
       console.error("タスクの読み込みに失敗しました:", error);
@@ -64,15 +69,17 @@ export class TaskService {
   /**
    * 新しいタスクを追加
    * @param title 新しいタスクのタイトル
+   * @param dueDate 期限日時（オプション）
    * @returns 作成されたタスク
    */
-  addTask(title: string): Task {
+  addTask(title: string, dueDate?: Date): Task {
     const tasks = this.loadFromStorage();
     const newTask: Task = {
       id: this.generateId(),
       title: title.trim(),
       completed: false,
       createdAt: new Date(),
+      dueDate: dueDate,
     };
 
     tasks.push(newTask);

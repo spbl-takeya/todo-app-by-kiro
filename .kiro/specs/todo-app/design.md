@@ -36,6 +36,7 @@ interface Task {
   title: string;
   completed: boolean;
   createdAt: Date;
+  dueDate?: Date;  // 期限日時（オプション）
 }
 ```
 
@@ -76,6 +77,17 @@ interface Task {
 #### ErrorMessage (`components/ErrorMessage.tsx`)
 エラーメッセージ表示用コンポーネント
 
+#### DatePicker (`components/DatePicker.tsx`)
+期限日時選択用コンポーネント
+- 日付・時刻の入力
+- バリデーション（過去日時の警告）
+- クリア機能
+
+#### TaskSorter (`components/TaskSorter.tsx`)
+タスクソート機能コンポーネント
+- 期限順、作成日順、タイトル順のソート
+- 昇順・降順の切り替え
+
 ## データモデル
 
 ### Task オブジェクト
@@ -84,7 +96,8 @@ interface Task {
   id: string,           // 一意識別子（UUID v4）
   title: string,        // タスクのタイトル
   completed: boolean,   // 完了状態
-  createdAt: Date      // 作成日時
+  createdAt: Date,     // 作成日時
+  dueDate?: Date       // 期限日時（オプション）
 }
 ```
 
@@ -96,7 +109,8 @@ interface Task {
       "id": "uuid-string",
       "title": "タスクのタイトル",
       "completed": false,
-      "createdAt": "2024-01-01T00:00:00.000Z"
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "dueDate": "2024-01-15T23:59:59.000Z"  // オプション
     }
   ]
 }
