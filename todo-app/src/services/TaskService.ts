@@ -1,78 +1,144 @@
-import { Task } from '../types/Task';
+import type { Task } from "../types/Task";
 
 /**
- * TaskService class for managing todo tasks
- * Handles CRUD operations and local storage integration
- * 
- * Requirements covered:
- * - 6.1: System automatically saves changes to local storage
- * - 6.2: System loads saved task data when application reopens
+ * TODOタスクを管理するサービスクラス
+ * CRUD操作とローカルストレージ連携を処理
+ *
+ * 対応要件:
+ * - 6.1: システムは変更を自動的にローカルストレージに保存
+ * - 6.2: システムはアプリケーション再開時に保存されたタスクデータを読み込み
  */
 export class TaskService {
-  private readonly STORAGE_KEY = 'todos';
+  private readonly STORAGE_KEY = "todos";
 
   /**
-   * Save tasks to local storage
-   * @param tasks Array of tasks to save
+   * ユニークなIDを生成
+   * @returns ランダムなUUID文字列
+   */
+  private generateId(): string {
+    return crypto.randomUUID();
+  }
+
+  /**
+   * タスクをローカルストレージに保存
+   * @param tasks 保存するタスクの配列
    */
   private saveToStorage(tasks: Task[]): void {
-    // Implementation will be added in task 3.1
+    try {
+      // DateオブジェクトをISO文字列に変換してJSON化
+      const serializedTasks = tasks.map((task) => ({
+        ...task,
+        createdAt: task.createdAt.toISOString(),
+      }));
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(serializedTasks));
+    } catch (error) {
+      console.error("タスクの保存に失敗しました:", error);
+    }
   }
 
   /**
-   * Load tasks from local storage
-   * @returns Array of tasks from storage
+   * ローカルストレージからタスクを読み込み
+   * @returns ストレージから取得したタスクの配列
    */
   private loadFromStorage(): Task[] {
-    // Implementation will be added in task 3.1
-    return [];
+    try {
+      const stored = localStorage.getItem(this.STORAGE_KEY);
+      if (!stored) {
+        return [];
+      }
+
+      const parsed = JSON.parse(stored) as Array<
+        Omit<Task, "createdAt"> & { createdAt: string }
+      >;
+      // ISO文字列をDateオブジェクトに復元
+      return parsed.map((task) => ({
+        ...task,
+        createdAt: new Date(task.createdAt),
+      }));
+    } catch (error) {
+      console.error("タスクの読み込みに失敗しました:", error);
+      return [];
+    }
   }
 
   /**
-   * Add a new task
-   * @param title Title of the new task
-   * @returns The created task
+   * 新しいタスクを追加
+   * @param title 新しいタスクのタイトル
+   * @returns 作成されたタスク
    */
   addTask(title: string): Task {
-    // Implementation will be added in task 3.2
-    throw new Error('Not implemented yet');
+    const tasks = this.loadFromStorage();
+    const newTask: Task = {
+      id: this.generateId(),
+      title: title.trim(),
+      completed: false,
+      createdAt: new Date(),
+    };
+
+    tasks.push(newTask);
+    this.saveToStorage(tasks);
+    return newTask;
   }
 
   /**
-   * Get all tasks
-   * @returns Array of all tasks
+   * すべてのタスクを取得
+   * @returns すべてのタスクの配列
    */
   getTasks(): Task[] {
-    // Implementation will be added in task 3.2
-    return [];
+    return this.loadFromStorage();
   }
 
   /**
-   * Update an existing task
-   * @param id Task ID to update
-   * @param updates Partial task object with updates
-   * @returns Updated task
+   * 既存のタスクを更新
+   * @param id 更新するタスクのID
+   * @param updates 更新内容を含む部分的なタスクオブジェクト
+   * @returns 更新されたタスク
    */
   updateTask(id: string, updates: Partial<Task>): Task {
-    // Implementation will be added in task 3.2
-    throw new Error('Not implemented yet');
+    const tasks = this.loadFromStorage();
+    const taskIndex = tasks.findIndex((task) => task.id === id);
+
+    if (taskIndex === -1) {
+      throw new Error(`ID ${id} のタスクが見つかりません`);
+    }
+
+    // createdAtとidは更新不可（分割代入で除外）
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { createdAt, id: taskId, ...allowedUpdates } = updates;
+    tasks[taskIndex] = { ...tasks[taskIndex], ...allowedUpdates };
+
+    this.saveToStorage(tasks);
+    return tasks[taskIndex];
   }
 
   /**
-   * Delete a task
-   * @param id Task ID to delete
+   * タスクを削除
+   * @param id 削除するタスクのID
    */
   deleteTask(id: string): void {
-    // Implementation will be added in task 3.2
+    const tasks = this.loadFromStorage();
+    const filteredTasks = tasks.filter((task) => task.id !== id);
+
+    if (filteredTasks.length === tasks.length) {
+      throw new Error(`ID ${id} のタスクが見つかりません`);
+    }
+
+    this.saveToStorage(filteredTasks);
   }
 
   /**
-   * Toggle task completion status
-   * @param id Task ID to toggle
-   * @returns Updated task
+   * タスクの完了状態を切り替え
+   * @param id 切り替えるタスクのID
+   * @returns 更新されたタスク
    */
   toggleTask(id: string): Task {
-    // Implementation will be added in task 3.2
-    throw new Error('Not implemented yet');
+    const tasks = this.loadFromStorage();
+    const task = tasks.find((task) => task.id === id);
+
+    if (!task) {
+      throw new Error(`ID ${id} のタスクが見つかりません`);
+    }
+
+    return this.updateTask(id, { completed: !task.completed });
   }
 }
