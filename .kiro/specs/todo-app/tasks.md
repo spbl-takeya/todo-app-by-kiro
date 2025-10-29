@@ -6,13 +6,13 @@
   - 必要な依存関係のインストール（uuid含む）
   - _要件: 6.3_
 
-- [ ] 2. 型定義とデータモデルの実装
-  - [ ] 2.1 Task型インターフェースの定義
+- [x] 2. 型定義とデータモデルの実装
+  - [x] 2.1 Task型インターフェースの定義
     - TypeScriptでTaskインターフェースを作成（src/types/Task.ts）
     - id、title、completed、createdAtプロパティを定義
     - _要件: 1.3, 2.2_
 
-  - [ ] 2.2 TaskServiceクラスの基本構造を実装
+  - [x] 2.2 TaskServiceクラスの基本構造を実装
     - TaskServiceクラスの骨組みを作成（src/services/TaskService.ts）
     - ローカルストレージとの連携メソッドの定義
     - _要件: 6.1, 6.2_
