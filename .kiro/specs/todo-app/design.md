@@ -172,6 +172,57 @@ todo-app/
 └── README.md           # プロジェクト説明
 ```
 
+## 期限機能廃止計画
+
+### 廃止対象コンポーネント
+
+#### Phase 1 (v1.5) - UI非表示化
+- **DatePicker** (`components/DatePicker.tsx`) - 完全削除
+- **TaskForm** - 期限入力フィールド削除
+- **TaskItem** - 期限編集機能無効化
+- **TaskSorter** - 期限順ソート削除
+
+#### Phase 2 (v2.0) - 完全削除
+- **Task型** - `dueDate?` プロパティ削除
+- **TaskService** - 期限関連メソッド削除
+- **ローカルストレージ** - 期限データクリーンアップ
+
+### 技術的影響範囲
+
+**保持される機能:**
+- 既存期限データの表示（Phase 1）
+- 期限アラート表示（Phase 1）
+
+**削除される機能:**
+- 新規期限設定
+- 期限編集・削除
+- 期限順ソート
+
+### データ移行戦略
+
+**Phase 1:**
+```typescript
+// 既存データ保持、新規設定無効化
+interface Task {
+  id: string;
+  title: string;
+  completed: boolean;
+  createdAt: Date;
+  dueDate?: Date; // 読み取り専用
+}
+```
+
+**Phase 2:**
+```typescript
+// 期限プロパティ完全削除
+interface Task {
+  id: string;
+  title: string;
+  completed: boolean;
+  createdAt: Date;
+}
+```
+
 ## UI/UX 設計
 
 ### レイアウト
