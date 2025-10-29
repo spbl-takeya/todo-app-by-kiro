@@ -1,4 +1,5 @@
 import type { Task } from '../types/Task'
+import { TaskItem } from './TaskItem'
 
 interface TaskListProps {
   /** 表示するタスクの配列 */
@@ -49,34 +50,12 @@ export function TaskList({
       <ul className="task-list-items">
         {tasks.map((task) => (
           <li key={task.id} className="task-list-item">
-            {/* TaskItemコンポーネントは次のタスクで実装予定 */}
-            <div className="task-item-placeholder">
-              <div className="task-item-content">
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => onToggleTask(task.id)}
-                  className="task-item-checkbox"
-                />
-                <span 
-                  className={`task-item-title ${task.completed ? 'task-item-title--completed' : ''}`}
-                >
-                  {task.title}
-                </span>
-              </div>
-              <div className="task-item-meta">
-                <span className="task-item-date">
-                  {task.createdAt.toLocaleDateString('ja-JP')}
-                </span>
-                <button
-                  onClick={() => onDeleteTask(task.id)}
-                  className="task-item-delete"
-                  aria-label={`${task.title}を削除`}
-                >
-                  削除
-                </button>
-              </div>
-            </div>
+            <TaskItem
+              task={task}
+              onToggle={onToggleTask}
+              onDelete={onDeleteTask}
+              onUpdate={onUpdateTask}
+            />
           </li>
         ))}
       </ul>
